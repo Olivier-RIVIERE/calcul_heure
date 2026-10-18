@@ -2,7 +2,7 @@
    3D Heures — Service Worker (Offline Support)
    ──────────────────────────────────────────── */
 
-const CACHE_NAME = '3d-heures-v1';
+const CACHE_NAME = '3d-heures-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
