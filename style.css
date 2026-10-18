@@ -145,51 +145,6 @@ body::before {
   font-weight: 400;
 }
 
-@media all and (display-mode: standalone) {
-  #install-container {
-    display: none !important;
-  }
-}
-
-.install-container {
-  margin-top: var(--sp-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-xs);
-}
-
-.install-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-xs);
-  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.45);
-  transition: transform var(--tr-fast), box-shadow var(--tr-fast);
-}
-
-.install-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 22px rgba(99, 102, 241, 0.6);
-}
-
-.install-dismiss {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--rad-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--c-text-muted);
-  font-size: var(--fs-xs);
-  background: rgba(255, 255, 255, 0.05);
-  transition: background var(--tr-fast), color var(--tr-fast);
-}
-
-.install-dismiss:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--c-text);
-}
-
 /* ─── Main Layout ─── */
 #app-main {
   position: relative;

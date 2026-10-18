@@ -701,72 +701,18 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('SW enregistré:', reg.scope))
+          .then((reg) => {
+            // Check for updates
+            reg.update();
+          })
           .catch((err) => console.warn('SW erreur:', err));
       });
-    }
 
-    const installContainer = document.getElementById('install-container');
-    const btnInstall = document.getElementById('btn-install-app');
-    const btnDismissInstall = document.getElementById('btn-dismiss-install');
-    let deferredPrompt = null;
-
-    // Detect if already running as standalone app
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                         window.navigator.standalone === true;
-    const isInstalledOrDismissed = localStorage.getItem('pwa_installed') === 'true' ||
-                                  localStorage.getItem('pwa_dismissed') === 'true';
-
-    // If already in standalone app or already marked installed/dismissed, hide permanently
-    if (isStandalone || isInstalledOrDismissed) {
-      if (installContainer) {
-        installContainer.hidden = true;
-      }
-      return;
-    }
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      if (isStandalone || localStorage.getItem('pwa_installed') === 'true' || localStorage.getItem('pwa_dismissed') === 'true') {
-        return;
-      }
-      e.preventDefault();
-      deferredPrompt = e;
-      if (installContainer) {
-        installContainer.hidden = false;
-      }
-    });
-
-    if (btnInstall) {
-      btnInstall.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          localStorage.setItem('pwa_installed', 'true');
-          showToast('Application installée !');
-        }
-        deferredPrompt = null;
-        if (installContainer) {
-          installContainer.hidden = true;
-        }
+      // Reload when new service worker takes over
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
       });
     }
-
-    if (btnDismissInstall) {
-      btnDismissInstall.addEventListener('click', () => {
-        localStorage.setItem('pwa_dismissed', 'true');
-        if (installContainer) {
-          installContainer.hidden = true;
-        }
-      });
-    }
-
-    window.addEventListener('appinstalled', () => {
-      localStorage.setItem('pwa_installed', 'true');
-      if (installContainer) {
-        installContainer.hidden = true;
-      }
-    });
   }
 
   init();
