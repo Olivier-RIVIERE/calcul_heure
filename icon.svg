@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#9333ea"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  
+  <!-- Rounded Base -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Stopwatch / Clock Graphic -->
+  <g filter="url(#shadow)">
+    <!-- Top button -->
+    <rect x="236" y="80" width="40" height="36" rx="10" fill="#ffffff" opacity="0.95"/>
+    <!-- Ring -->
+    <circle cx="256" cy="276" r="140" fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
+    <!-- Hour Hand (10h) -->
+    <line x1="256" y1="276" x2="186" y2="206" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+    <!-- Minute Hand (2h) -->
+    <line x1="256" y1="276" x2="336" y2="226" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
+    <!-- Center Pin -->
+    <circle cx="256" cy="276" r="14" fill="#ffffff"/>
+  </g>
+  
+  <!-- 3D text badge -->
+  <text x="256" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="34" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="4" opacity="0.9">HEURES 3D</text>
+</svg>

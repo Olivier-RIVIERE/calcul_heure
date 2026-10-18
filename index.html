@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Heures — Suivi du temps de travail</title>
+  <meta name="description" content="Application de suivi des heures de travail pour le secteur de la dératisation, désinfection et désinsectisation (3D).">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="3D Heures">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ─── Header ─── -->
+  <header id="app-header">
+    <div class="header-brand">
+      <div class="logo" aria-hidden="true">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="url(#logo-grad)"/>
+          <path d="M9 16a7 7 0 1 1 14 0" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="16" y1="10" x2="16" y2="16" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="16" y1="16" x2="20" y2="18" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <defs><linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+        </svg>
+      </div>
+      <h1>3D <span class="brand-accent">Heures</span></h1>
+    </div>
+    <p class="header-subtitle">Dératisation · Désinfection · Désinsectisation</p>
+    <div id="install-container" class="install-container" hidden>
+      <button id="btn-install-app" class="btn btn--sm btn--primary install-btn">
+        <span aria-hidden="true">📲</span> Installer sur mon téléphone
+      </button>
+    </div>
+  </header>
+
+  <!-- ─── Main ─── -->
+  <main id="app-main">
+
+    <!-- ─── Quick Entry Section ─── -->
+    <section id="entry-section" class="card" aria-labelledby="entry-title">
+      <h2 id="entry-title">
+        <span class="section-icon" aria-hidden="true">＋</span>
+        Saisir mes heures
+      </h2>
+      <form id="entry-form" autocomplete="off">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="entry-date">Date</label>
+            <input type="date" id="entry-date" required>
+          </div>
+          <div class="form-group">
+            <label for="entry-start">Début</label>
+            <input type="time" id="entry-start" required>
+          </div>
+          <div class="form-group">
+            <label for="entry-end">Fin</label>
+            <input type="time" id="entry-end" required>
+          </div>
+          <div class="form-group">
+            <label for="entry-pause">Pause <span class="label-hint">(min)</span></label>
+            <input type="number" id="entry-pause" min="0" max="480" value="0" step="5">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-group--wide">
+            <label for="entry-note">Note <span class="label-hint">(optionnel)</span></label>
+            <input type="text" id="entry-note" placeholder="Ex : Chantier Dupont, traitement cafards…">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" id="btn-submit" class="btn btn--primary">
+            <span class="btn-icon" aria-hidden="true">＋</span>
+            Ajouter
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ─── Dashboard ─── -->
+    <section id="dashboard-section" aria-labelledby="dashboard-title">
+      <h2 id="dashboard-title" class="sr-only">Tableau de bord</h2>
+      <div class="stats-grid">
+        <div class="stat-card" id="stat-today">
+          <span class="stat-label">Aujourd'hui</span>
+          <span class="stat-value" id="val-today">0h00</span>
+        </div>
+        <div class="stat-card" id="stat-week">
+          <span class="stat-label">Cette semaine</span>
+          <span class="stat-value" id="val-week">0h00</span>
+        </div>
+        <div class="stat-card" id="stat-month">
+          <span class="stat-label">Ce mois</span>
+          <span class="stat-value" id="val-month">0h00</span>
+        </div>
+        <div class="stat-card" id="stat-year">
+          <span class="stat-label">Cette année</span>
+          <span class="stat-value" id="val-year">0h00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Decimal Converter ─── -->
+    <section id="converter-section" class="card" aria-labelledby="converter-title">
+      <h2 id="converter-title">
+        <span class="section-icon" aria-hidden="true">⇄</span>
+        Convertisseur décimal <span class="label-hint">— pour ta fiche papier</span>
+      </h2>
+      <div class="converter-layout">
+        <div class="converter-inputs">
+          <div class="converter-group">
+            <label for="conv-time">Durée (h:min)</label>
+            <div class="converter-input-row">
+              <input type="number" id="conv-hours" min="0" max="23" placeholder="h" aria-label="Heures">
+              <span class="converter-sep">:</span>
+              <input type="number" id="conv-minutes" min="0" max="59" placeholder="min" aria-label="Minutes">
+            </div>
+          </div>
+          <div class="converter-arrow" aria-hidden="true">⇄</div>
+          <div class="converter-group">
+            <label for="conv-decimal">Décimal</label>
+            <input type="number" id="conv-decimal" step="0.01" min="0" placeholder="ex : 1,5">
+          </div>
+        </div>
+        <div class="converter-result" id="converter-result" aria-live="polite"></div>
+        <details class="converter-ref">
+          <summary>Tableau de référence rapide</summary>
+          <div class="ref-table-wrap">
+            <table class="ref-table" id="ref-table">
+              <thead>
+                <tr><th>Minutes</th><th>Décimal</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>5 min</td><td>0,08</td></tr>
+                <tr><td>10 min</td><td>0,17</td></tr>
+                <tr><td>15 min</td><td>0,25</td></tr>
+                <tr><td>20 min</td><td>0,33</td></tr>
+                <tr><td>30 min</td><td>0,50</td></tr>
+                <tr><td>45 min</td><td>0,75</td></tr>
+                <tr><td>1h</td><td>1,00</td></tr>
+                <tr><td>1h15</td><td>1,25</td></tr>
+                <tr><td>1h30</td><td>1,50</td></tr>
+                <tr><td>2h</td><td>2,00</td></tr>
+                <tr><td>2h30</td><td>2,50</td></tr>
+                <tr><td>3h</td><td>3,00</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ─── History ─── -->
+    <section id="history-section" class="card" aria-labelledby="history-title">
+      <div class="section-header">
+        <h2 id="history-title">
+          <span class="section-icon" aria-hidden="true">📋</span>
+          Historique
+        </h2>
+        <div class="history-controls">
+          <div class="filter-group">
+            <label for="filter-month" class="sr-only">Filtrer par mois</label>
+            <select id="filter-month"></select>
+          </div>
+          <button id="btn-export" class="btn btn--ghost" title="Exporter en CSV">
+            <span aria-hidden="true">⬇</span> Exporter
+          </button>
+        </div>
+      </div>
+      <div id="history-list" class="history-list">
+        <p class="empty-state" id="empty-state">Aucune entrée enregistrée. Commencez par saisir vos heures ci-dessus.</p>
+      </div>
+    </section>
+
+    <!-- ─── Backup Section ─── -->
+    <section id="backup-section" class="card" aria-labelledby="backup-title">
+      <h2 id="backup-title">
+        <span class="section-icon" aria-hidden="true">🛡</span>
+        Sauvegarde
+      </h2>
+      <p class="backup-desc">Sauvegarde tes heures en fin de mois pour les garder sur Google Drive.</p>
+      <div class="backup-actions">
+        <button id="btn-backup-share" class="btn btn--primary">
+          <span aria-hidden="true">📤</span> Partager / Sauvegarder
+        </button>
+        <label class="btn btn--ghost" for="import-file" role="button" tabindex="0">
+          <span aria-hidden="true">📥</span> Restaurer
+        </label>
+        <input type="file" id="import-file" accept=".json" class="sr-only">
+      </div>
+      <p class="backup-info" id="backup-info"></p>
+    </section>
+
+  </main>
+
+  <!-- ─── Edit Dialog ─── -->
+  <dialog id="edit-dialog">
+    <form id="edit-form" method="dialog" autocomplete="off">
+      <h3>Modifier l'entrée</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="edit-date">Date</label>
+          <input type="date" id="edit-date" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-start">Début</label>
+          <input type="time" id="edit-start" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-end">Fin</label>
+          <input type="time" id="edit-end" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-pause">Pause <span class="label-hint">(min)</span></label>
+          <input type="number" id="edit-pause" min="0" max="480" step="5">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group form-group--wide">
+          <label for="edit-note">Note</label>
+          <input type="text" id="edit-note">
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" id="btn-cancel-edit" class="btn btn--ghost">Annuler</button>
+        <button type="submit" class="btn btn--primary">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ─── Delete Confirmation Dialog ─── -->
+  <dialog id="delete-dialog">
+    <div class="dialog-body">
+      <h3>Supprimer cette entrée ?</h3>
+      <p>Cette action est irréversible.</p>
+      <div class="dialog-actions">
+        <button type="button" id="btn-cancel-delete" class="btn btn--ghost">Annuler</button>
+        <button type="button" id="btn-confirm-delete" class="btn btn--danger">Supprimer</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ─── Backup Reminder Banner ─── -->
+  <div id="backup-reminder" class="backup-reminder" hidden>
+    <span>📅 Fin du mois — pense à sauvegarder tes heures !</span>
+    <button id="btn-reminder-backup" class="btn btn--primary btn--sm">Sauvegarder</button>
+    <button id="btn-reminder-dismiss" class="btn-icon-only" aria-label="Fermer">✕</button>
+  </div>
+
+  <!-- ─── Toast Container ─── -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
